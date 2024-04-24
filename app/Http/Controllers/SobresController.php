@@ -77,7 +77,7 @@ class SobresController extends Controller
         $mes = array_search($month, static::MESES);
 
         $fecha = implode('-', [$date->endOfMonth()->day, $month, $year]);
-        $periodo = implode(' ', ['DEL', $date->startOfMonth()->day, 'AL', $date->endOfMonth()->day, 'DEL', $year]);
+        $periodo = implode(' ', ['DEL', $date->startOfMonth()->day, 'AL', $date->endOfMonth()->day, 'DE', $mes, 'DEL', $year]);
 
         $respaldos = [];
         foreach ($items as $item) {
