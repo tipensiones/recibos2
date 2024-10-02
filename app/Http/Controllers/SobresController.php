@@ -99,7 +99,7 @@ class SobresController extends Controller
         ]);
         */
 
-        $pdf = Pdf::loadView('recibo', [
+        $pdf = Pdf::setPaper('letter', 'landscape')->loadView('recibo', [
             'respaldos' => $respaldos,
             'maestro' => $maestro,
             'fecha' => $fecha,
