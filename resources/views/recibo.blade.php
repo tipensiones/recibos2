@@ -136,7 +136,7 @@
         </td>
         <td>
             <table>
-            @foreach (@respaldos as $item)
+            @foreach (@respaldo as $item)
                 @php
                     $deducciones = $deducciones + Arr::get($item, 'monto', 0);
                 @endphp
