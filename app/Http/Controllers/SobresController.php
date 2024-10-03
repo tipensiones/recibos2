@@ -93,6 +93,22 @@ class SobresController extends Controller
                         ->get();
             array_push($respaldos, $nomina);
         }
+
+
+        $respaldos2 = [];
+        foreach ($items as $item) {
+            $archivo2 = Arr::get($item, 'archivo');
+            $tipo_nomina2 = Arr::get($item, 'tipo_nomina');
+            $jpp2 = Arr::get($item, 'jpp');
+            $numjpp2 = Arr::get($item, 'numjpp');
+            $nomina2 = RespaldoNomina::where('archivo', $archivo2)
+                        ->where('tipo_nomina', $tipo_nomina2)
+                        ->where('jpp', $jpp2)
+                        ->where('numjpp', $numjpp2)
+                        ->where('clave','<',60)
+                        ->get();
+            array_push($respaldos2, $nomina2);
+        }
         /*
         return view('recibo', [
             'respaldo' => $respaldo,

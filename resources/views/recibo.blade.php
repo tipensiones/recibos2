@@ -108,7 +108,7 @@
                 $percepciones = 0;
                 $deducciones = 0;
             @endphp
-            @foreach ($respaldo as $item)
+            @foreach ($respaldo2 as $item)
                 @if (Arr::get($item, 'clave') <= 60)
                 @php
                     $percepciones = $percepciones + Arr::get($item, 'monto', 0);
