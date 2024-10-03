@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-    <title>Page Title</title>
+    <title>Recibos de nomina</title>
     <style>
         *{
             font-family: Arial, Helvetica, sans-serif;
@@ -103,23 +103,16 @@
                 <th style="width: 15%; background: #eee; border-bottom: 1px solid #000; border-right: 1px solid #000;">IMPORTE</th>
             </tr>
         </thead>
-    </table>
-
-    <table>
         <tbody>
-         <tr><td>
-            <table>
-            
             @php
                 $percepciones = 0;
                 $deducciones = 0;
             @endphp
-            @foreach ($respaldo2 as $item)
+            @foreach ($respaldo as $item)
                 @if (Arr::get($item, 'clave') <= 60)
                 @php
                     $percepciones = $percepciones + Arr::get($item, 'monto', 0);
                 @endphp
-                
                 <tr>
                     <td style="width: 10%; text-align: center; border-left: 1px solid #000; border-right: 1px solid #000;">{{ Arr::get($item, 'clave') }}</td>
                     <td style="width: 25%; text-align: center; border-right: 1px solid #000;">{{ Arr::get($item, 'descri') }}</td>
@@ -129,17 +122,10 @@
                     <td style="width: 25%; text-align: center; border-right: 1px solid #000;">&nbsp;</td>
                     <td style="width: 15%; text-align: right; border-right: 1px solid #000;">&nbsp;</td>
                 </tr>
-                @endforeach
-            
-            </table>
-        </td>
-        <td>
-            <table>
-            @foreach ($respaldos as $item)
+                @else
                 @php
                     $deducciones = $deducciones + Arr::get($item, 'monto', 0);
                 @endphp
-                
                 <tr>
                     <td style="width: 10%; text-align: center; border-left: 1px solid #000; border-right: 1px solid #000;">&nbsp;</td>
                     <td style="width: 25%; text-align: center; border-right: 1px solid #000;">&nbsp;</td>
@@ -149,10 +135,9 @@
                     <td style="width: 25%; text-align: center; border-right: 1px solid #000;">{{ Arr::get($item, 'descri') }}</td>
                     <td style="width: 15%; text-align: right; border-right: 1px solid #000;">{{ implode('', ['$', number_format(Arr::get($item, 'monto', 0), 2)]) }}</td>
                 </tr>
+                @endif
+
             @endforeach
-                </table>
-            </td></tr>
-        </table>
             <tr>
                 <td style="width: 10%; text-align: center; border-left: 1px solid #000; border-right: 1px solid #000; border-bottom: 1px solid #000;">&nbsp;</td>
                 <td style="width: 25%; text-align: center; border-right: 1px solid #000; border-bottom: 1px solid #000;">&nbsp;</td>
