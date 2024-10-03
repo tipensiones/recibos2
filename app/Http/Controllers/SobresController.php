@@ -118,7 +118,7 @@ class SobresController extends Controller
 
         $pdf = Pdf::setPaper('letter', 'landscape')->loadView('recibo', [
             'respaldos' => $respaldos,
-            'respaldos2' => $respaldos2,
+            //'respaldos2' => $respaldos2,
             'maestro' => $maestro,
             'fecha' => $fecha,
             'periodo' => $periodo
