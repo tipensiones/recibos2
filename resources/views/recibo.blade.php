@@ -115,7 +115,7 @@
                 $deducciones = 0;
             @endphp
             
-            @foreach ($respaldos2 as $item)
+            @foreach ($respaldos as $item)
                 
                 @php
                     $percepciones = $percepciones + Arr::get($item, 'monto', 0);
