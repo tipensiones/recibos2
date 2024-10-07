@@ -93,7 +93,7 @@ class SobresController extends Controller
             array_push($respaldos, $nomina);
         }
 
-        dd($respaldos);
+        dd("valor");
         $respaldos2 = [];
         foreach ($items as $item) {
             $archivo2 = Arr::get($item, 'archivo');
@@ -106,7 +106,7 @@ class SobresController extends Controller
                         ->where('numjpp', $numjpp2)
                         ->where('clave','<',60)
                         ->get();
-            array_push($respaldos2, $nomina2);
+            array_push($respaldos, $nomina2);
         }
         /*
         return view('recibo', [
