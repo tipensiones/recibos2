@@ -93,7 +93,7 @@ class SobresController extends Controller
             array_push($respaldos, $nomina);
         }
 
-        dd("valor");
+        dd($periodo);
         $respaldos2 = [];
         foreach ($items as $item) {
             $archivo2 = Arr::get($item, 'archivo');
