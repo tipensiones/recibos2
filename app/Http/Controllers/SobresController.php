@@ -114,7 +114,7 @@ class SobresController extends Controller
             'maestro' => $maestro
         ]);
         */
-        dd($respaldos2);
+        dd($respaldos);
         $pdf = Pdf::loadView('recibo', [
             'respaldos' => $respaldos,
             //'respaldos2' => $respaldos2,
