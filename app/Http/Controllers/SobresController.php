@@ -89,6 +89,7 @@ class SobresController extends Controller
                         ->where('tipo_nomina', $tipo_nomina)
                         ->where('jpp', $jpp)
                         ->where('numjpp', $numjpp)
+                        ->where('clave','>',60)
                         ->get();
             array_push($respaldos, $nomina);
         }
