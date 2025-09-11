@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-    @foreach ($respaldos as $respaldo)
+    @foreach ($respaldos1 as $index => $respaldo)
     <table style="width: 100%;">
         <tbody>
             <tr>
@@ -107,37 +107,45 @@
             @php
                 $percepciones = 0;
                 $deducciones = 0;
+                $index=0;
             @endphp
-            @foreach ($respaldo as $item)
-                @if (Arr::get($item, 'clave') <= 60)
+
+
+            @for ($i = 0; $i < count($respaldo); $i++)
                 @php
-                    $percepciones = $percepciones + Arr::get($item, 'monto', 0);
+
+                    $item = $respaldo[$i]; // elemento de percepciones
+                    $valor = $respaldos2[$index][$i]; // elemento correspondiente de deducciones
+
+                    $percepciones += $item->monto ?? 0;
+                    $deducciones += $valor->monto ?? 0;
+
                 @endphp
                 <tr>
-                    <td style="width: 10%; text-align: center; border-left: 1px solid #000; border-right: 1px solid #000;">{{ Arr::get($item, 'clave') }}</td>
-                    <td style="width: 25%; text-align: center; border-right: 1px solid #000;">{{ Arr::get($item, 'descri') }}</td>
-                    <td style="width: 15%; text-align: right; border-right: 1px solid #000;">{{ implode('', ['$', number_format(Arr::get($item, 'monto', 0), 2)]) }}</td>
+                    <td style="width: 15%; text-align: center; border-left: 1px solid #000; border-right: 1px solid #000;">{{ Arr::get($valor, 'clave') }}</td>
+                    <td style="width: 45%; text-align: center; border-right: 1px solid #000;">{{ Arr::get($valor, 'descri') }}</td>
+                   
+                          @php
+    $montoD = (Arr::get($valor, 'monto') == 0.00) ? "" : number_format(Arr::get($valor, 'monto', 0), 2);
+@endphp
 
-                    <td style="width: 10%; text-align: center; border-right: 1px solid #000;">&nbsp;</td>
-                    <td style="width: 25%; text-align: center; border-right: 1px solid #000;">&nbsp;</td>
-                    <td style="width: 15%; text-align: right; border-right: 1px solid #000;">&nbsp;</td>
+<td style="width: 20%; text-align: right; border-right: 1px solid #000;">${{ $montoD }}</td>
+                   
+                
+                    
+
+                    <td style="width: 15%; text-align: center; border-right: 1px solid #000;">{{ Arr::get($item, 'clave') }}</td>
+                    <td style="width: 45%; text-align: center; border-right: 1px solid #000;">{{ Arr::get($item, 'descri') }}</td>
+
+                        @php
+    $montoD = (Arr::get($item, 'monto') == 0.00) ? "" : number_format(Arr::get($item, 'monto', 0), 2);
+@endphp
+
+<td style="width: 20%; text-align: right; border-right: 1px solid #000;">${{ $montoD }}</td>
+                    
                 </tr>
-                @else
-                @php
-                    $deducciones = $deducciones + Arr::get($item, 'monto', 0);
-                @endphp
-                <tr>
-                    <td style="width: 10%; text-align: center; border-left: 1px solid #000; border-right: 1px solid #000;">&nbsp;</td>
-                    <td style="width: 25%; text-align: center; border-right: 1px solid #000;">&nbsp;</td>
-                    <td style="width: 15%; text-align: right; border-right: 1px solid #000;">&nbsp;</td>
 
-                    <td style="width: 10%; text-align: center; border-right: 1px solid #000;">{{ Arr::get($item, 'clave') }}</td>
-                    <td style="width: 25%; text-align: center; border-right: 1px solid #000;">{{ Arr::get($item, 'descri') }}</td>
-                    <td style="width: 15%; text-align: right; border-right: 1px solid #000;">{{ implode('', ['$', number_format(Arr::get($item, 'monto', 0), 2)]) }}</td>
-                </tr>
-                @endif
-
-            @endforeach
+            @endfor
             <tr>
                 <td style="width: 10%; text-align: center; border-left: 1px solid #000; border-right: 1px solid #000; border-bottom: 1px solid #000;">&nbsp;</td>
                 <td style="width: 25%; text-align: center; border-right: 1px solid #000; border-bottom: 1px solid #000;">&nbsp;</td>
@@ -152,14 +160,14 @@
                     <strong>TOTAL:</strong>
                 </td>
                 <td style="text-align: right; border-left: 1px solid #000; border-right: 1px solid #000; border-bottom: 1px solid #000;">
-                    ${{ number_format($percepciones, 2) }}
+                    ${{ number_format($deducciones, 2) }}
                 </td>
                 <td>&nbsp;</td>
                 <td style="text-align: right;">
                     <strong>TOTAL:</strong>
                 </td>
                 <td style="text-align: right; border-left: 1px solid #000; border-right: 1px solid #000; border-bottom: 1px solid #000;">
-                    ${{ number_format($deducciones, 2) }}
+                    ${{ number_format($percepciones, 2) }}
                 </td>
             </tr>
             <tr>
@@ -174,7 +182,7 @@
                     &nbsp;
                 </td>
                 <td style="text-align: right; border-left: 1px solid #000; border-right: 1px solid #000; border-bottom: 1px solid #000;">
-                    ${{ number_format($percepciones - $deducciones, 2) }}
+                    ${{ number_format($deducciones-$percepciones, 2) }}
                 </td>
             </tr>
             <tr>

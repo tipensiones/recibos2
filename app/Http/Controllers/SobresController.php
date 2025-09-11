@@ -79,6 +79,74 @@ class SobresController extends Controller
         $fecha = implode('-', [$date->endOfMonth()->day, $month, $year]);
         $periodo = implode(' ', ['DEL', $date->startOfMonth()->day, 'AL', $date->endOfMonth()->day, 'DE', $mes, 'DEL', $year]);
 
+$respaldos1 = [];
+$respaldos2 = [];
+
+foreach ($items as $item) {
+    $archivo = Arr::get($item, 'archivo');
+    $tipo_nomina = Arr::get($item, 'tipo_nomina');
+    $jpp = Arr::get($item, 'jpp');
+    $numjpp = Arr::get($item, 'numjpp');
+
+    $nomina1 = RespaldoNomina::where('archivo', $archivo)
+                ->where('tipo_nomina', $tipo_nomina)
+                ->where('jpp', $jpp)
+                ->where('numjpp', $numjpp)
+                ->where('clave', '>', 60)
+                ->orderBy('clave', 'asc')
+                ->get();
+
+    $nomina2 = RespaldoNomina::where('archivo', $archivo)
+                ->where('tipo_nomina', $tipo_nomina)
+                ->where('jpp', $jpp)
+                ->where('numjpp', $numjpp)
+                ->where('clave', '<', 60)
+                ->orderBy('clave', 'asc')
+                ->get();
+
+    // Determinar la longitud máxima
+    $max = max($nomina1->count(), $nomina2->count());
+
+    // Crear objeto plantilla con la misma estructura que un RespaldoNomina
+    $plantilla = (new RespaldoNomina())->forceFill([
+    'rfc' => '',
+    'jpp' => $jpp,
+    'numjpp' => $numjpp,
+    'clave' => '',
+    'secuen' => 0,
+    'descri' => '',
+    'pago4' => 0,
+    'pagot' => '',
+    'leyen' => null,
+    'fechaini' => null,
+    'fechafin' => null,
+    'nomelec' => null,
+    'supervive' => null,
+    'archivo' => $archivo,
+    'tipo_nomina' => $tipo_nomina,
+    'monto' => '0.00',
+    'tipo_pago' => '',
+    'folio' => 0
+]);
+
+    // Rellenar nomina1 con copias de la plantilla
+    while ($nomina1->count() < $max) {
+        $nomina1->push(clone $plantilla);
+    }
+
+    // Rellenar nomina2 con copias de la plantilla
+    while ($nomina2->count() < $max) {
+        $nomina2->push(clone $plantilla);
+    }
+
+array_push($respaldos1 , $nomina1);
+array_push($respaldos2 , $nomina2);
+}   
+
+
+
+//dd($respaldos1,$respaldos2);
+/*
         $respaldos = [];
         foreach ($items as $item) {
             $archivo = Arr::get($item, 'archivo');
@@ -108,7 +176,7 @@ class SobresController extends Controller
                         ->where('clave','<',60)
                         ->get();
             array_push($respaldos, $nomina2);
-        }
+        }*/
         /*
         return view('recibo', [
             'respaldo' => $respaldo,
@@ -117,12 +185,12 @@ class SobresController extends Controller
         */
         
         $pdf = Pdf::loadView('recibo', [
-            'respaldos' => $respaldos,
-            //'respaldos2' => $respaldos2,
+            'respaldos1' => $respaldos1,
+            'respaldos2' => $respaldos2,
             'maestro' => $maestro,
             'fecha' => $fecha,
             'periodo' => $periodo
-        ]);
+        ])->setPaper('letter', 'landscape');
         $uuid = Uuid::uuid4();
         return $pdf->stream("$uuid.pdf");
     }
