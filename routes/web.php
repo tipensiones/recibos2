@@ -31,7 +31,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard', [
-        'years' => [2022, 2023],
+        'years' => [2022, 2023, 2024, 2025],
         'months' => [
             'ENERO', 'FEBRERO',
             'MARZO', 'ABRIL',

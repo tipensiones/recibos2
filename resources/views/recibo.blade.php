@@ -5,196 +5,129 @@
 
     <title>Recibos de nomina</title>
     <style>
-        *{
-            font-family: Arial, Helvetica, sans-serif;
-        }
-        .page-break {
-            page-break-after: always;
-        }
-    </style>
+    *{
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        /* Imagen de fondo */
+        background-image: url("{{ public_path('recibofondo.png') }}");
+        background-size: 24.94cm 19cm; /* carta horizontal: ancho x alto */
+        background-position: center;  /* Centra la imagen */
+        background-repeat: no-repeat; /* No repetir */
+    }
+
+    .page-break {
+        page-break-after: always;
+    }
+</style>
 </head>
+
+<!-- aqui va el body -->
+
 <body>
-    @foreach ($respaldos1 as $index => $respaldo)
-    <table style="width: 100%;">
-        <tbody>
+    <img 
+        src="{{ public_path('logo2.png') }}" 
+        style="
+            position: fixed;
+            top: 0.001cm;      /* distancia desde la parte superior */
+            left: 0.1cm;     /* distancia desde la izquierda */
+            width: 8.2cm;    /* ancho de la imagen */
+            height: auto;  /* mantiene proporción */
+            z-index: 2;    /* encima del fondo */
+        "
+    >    
+
+    @foreach($datosPorTipo as $tipo => $grupo)
+        <!-- PARTE DE LA FECHA -->
+        <table style="position:absolute; top:2.1cm; left:22.35cm; border-collapse:collapse; font-family: Arial, sans-serif; font-size:12pt; text-align:center;">
+            <tr><td style="width:2.7cm; border:none;">{{ $grupo['fecha'] }}</td></tr>
+        </table>
+
+        <!-- PARTE DEL PERIODO -->
+        <table style="position:absolute; top:2.3cm; left:11.7cm; border-collapse:collapse; font-family: Arial, sans-serif; font-size:11pt; text-align:left; font-weight:bold;">
+            <tr><td style="width:10cm; border:none;">{{ $grupo['periodo'] }}</td></tr>
+        </table>
+
+        <!-- PARTE DEL NOMBRE Y JPP -->
+        <table style="position:absolute; top:4.01cm; left:0.5cm; border-collapse:collapse; font-family: Arial, sans-serif; font-size:11pt; text-align:center;">
             <tr>
-                <td style="width: 20%;">
-                    <img src="{{ public_path('logo.png') }}" alt="" style="width: 100%;">
-                </td>
-                <td style="width: 65%; font-size: 0.8em;">
-                    <div>OPE631216S18 - OFICINA DE PENSIONES DEL ESTADO</div>
-                    <div>REGIMEN FISCAL DE PERSONAS MORALES CON FINES NO LUCRATIVOS</div>
-                    <div>PERIODO DE PAGO: {{ $periodo }}</div>
-                </td>
-                <td style="width: 15%;">
-                    <table style="width: 100%; margin: 0; padding: 0; border-spacing: 0;">
-                        <thead>
-                            <tr>
-                                <th style="background: #eee; border: 1px solid #000; font-size: 0.8em;">FECHA DE PAGO</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="border-left: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000; font-size: 0.8em;">{{ $fecha }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
+                <td style="width:3.5cm; border:none;">{{ $grupo['maestro']->proyecto }}</td>
+                <td style="width:11cm; border:none;">{{ $grupo['maestro']->nombre }}</td>
             </tr>
-        </tbody>
-    </table>
+        </table>
 
-    <table style="width: 100%; margin: 0; padding: 0; border-spacing: 0; border: 1px solid #000;">
-        <thead>
+        <!-- PARTE DEL CURP Y RFC -->
+        <table style="position:absolute; top:5.7cm; left:0.5cm; border-collapse:collapse; font-family: Arial, sans-serif; font-size:11pt; text-align:center;">
             <tr>
-                <th style="background: #eee; border-bottom: 1px solid #000; border-right: 1px solid #000;">NO. BENEFICIARIO</th>
-                <th style="background: #eee; border-bottom: 1px solid #000; border-right: 1px solid #000;">NOMBRE</th>
-                <th style="background: #eee; border-bottom: 1px solid #000; border-right: 1px solid #000;">PERIODICIDAD</th>
-                <th style="background: #eee; border-bottom: 1px solid #000;">FORMA DE PAGO</th>
+                <td style="width:4.8cm; border:none;">{{ $grupo['maestro']->curp }}</td>
+                <td style="width:4.8cm; border:none;">{{ $grupo['maestro']->rfc }}</td>
+                <td style="width:4.8cm; border:none;">{{ $grupo['maestro']->imss }}</td>
+                <td style="width:9.9cm; border:none;">{{ $grupo['maestro']->categ }}</td>
             </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="text-align: center; border-right: 1px solid #000;">{{ implode('', [Arr::get($maestro, 'jpp'), Arr::get($maestro, 'num')]) }}</td>
-                <td style="text-align: center; border-right: 1px solid #000;">{{ Arr::get($maestro, 'nombre') }}</td>
-                <td style="text-align: center; border-right: 1px solid #000;">MENSUAL</td>
-                <td style="text-align: center;">ELECTRONICO</td>
-            </tr>
-        </tbody>
-    </table>
+        </table>
 
-    <table style="width: 100%; margin: 0; padding: 0; border-spacing: 0; border-left: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">
-        <thead>
-            <tr>
-                <th style="background: #eee; border-bottom: 1px solid #000; border-right: 1px solid #000;">CURP</th>
-                <th style="background: #eee; border-bottom: 1px solid #000; border-right: 1px solid #000;">R.F.C.</th>
-                <th style="background: #eee; border-bottom: 1px solid #000; border-right: 1px solid #000;">IMSS</th>
-                <th style="background: #eee; border-bottom: 1px solid #000;">MODALIDAD</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="text-align: center; border-right: 1px solid #000;">{{ Arr::get($maestro, 'curp') }}</td>
-                <td style="text-align: center; border-right: 1px solid #000;">{{ Arr::get($maestro, 'rfc') }}</td>
-                <td style="text-align: center; border-right: 1px solid #000;">{{ Arr::get($maestro, 'imss') }}</td>
-                <td style="text-align: center;"></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <table style="width: 100%; margin: 0; padding: 0; border-spacing: 0; border-left: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">
-        <thead>
-            <tr>
-                <th style="width: 50%; background: #eee; border-right: 1px solid #000;">PERCEPCIONES</th>
-                <th style="width: 50%; background: #eee;">DEDUCCIONES</th>
-            </tr>
-        </thead>
-    </table>
-
-    <table style="width: 100%; margin: 0; padding: 0; border-spacing: 0;">
-        <thead>
-            <tr>
-                <th style="width: 10%; background: #eee; border-left: 1px solid #000; border-right: 1px solid #000; border-bottom: 1px solid #000;">CLAVE</th>
-                <th style="width: 25%; background: #eee; border-right: 1px solid #000; border-bottom: 1px solid #000;">DESCRIPCIÓN</th>
-                <th style="width: 15%; background: #eee; border-right: 1px solid #000; border-bottom: 1px solid #000;">IMPORTE</th>
-
-                <th style="width: 10%; background: #eee; border-right: 1px solid #000; border-bottom: 1px solid #000;">CLAVE</th>
-                <th style="width: 25%; background: #eee; border-right: 1px solid #000; border-bottom: 1px solid #000;">DESCRIPCIÓN</th>
-                <th style="width: 15%; background: #eee; border-bottom: 1px solid #000; border-right: 1px solid #000;">IMPORTE</th>
-            </tr>
-        </thead>
-        <tbody>
-            @php
-                $percepciones = 0;
-                $deducciones = 0;
-                $index=0;
-            @endphp
-
-
-            @for ($i = 0; $i < count($respaldo); $i++)
-                @php
-
-                    $item = $respaldo[$i]; // elemento de percepciones
-                    $valor = $respaldos2[$index][$i]; // elemento correspondiente de deducciones
-
-                    $percepciones += $item->monto ?? 0;
-                    $deducciones += $valor->monto ?? 0;
-
-                @endphp
+         <!-- PARTE DE LAS PERCEPCIONES -->
+        <table style="position:absolute; top:8.3cm; left:0.5cm; border-collapse:collapse; font-family: Arial, sans-serif; font-size:6pt; text-align:center;">
+            @php $totalPercepciones = 0; @endphp
+            @foreach($grupo['percepciones'] as $item)
+                @php $totalPercepciones += $item->monto; @endphp
                 <tr>
-                    <td style="width: 15%; text-align: center; border-left: 1px solid #000; border-right: 1px solid #000;">{{ Arr::get($valor, 'clave') }}</td>
-                    <td style="width: 45%; text-align: center; border-right: 1px solid #000;">{{ Arr::get($valor, 'descri') }}</td>
-                   
-                          @php
-    $montoD = (Arr::get($valor, 'monto') == 0.00) ? "" : number_format(Arr::get($valor, 'monto', 0), 2);
-@endphp
-
-<td style="width: 20%; text-align: right; border-right: 1px solid #000;">${{ $montoD }}</td>
-                   
-                
-                    
-
-                    <td style="width: 15%; text-align: center; border-right: 1px solid #000;">{{ Arr::get($item, 'clave') }}</td>
-                    <td style="width: 45%; text-align: center; border-right: 1px solid #000;">{{ Arr::get($item, 'descri') }}</td>
-
-                        @php
-    $montoD = (Arr::get($item, 'monto') == 0.00) ? "" : number_format(Arr::get($item, 'monto', 0), 2);
-@endphp
-
-<td style="width: 20%; text-align: right; border-right: 1px solid #000;">${{ $montoD }}</td>
-                    
+                    <td style="width:1.5cm; border:none;">{{ $item->clave }}</td>
+                    <td style="width:8.2cm; border:none;">{{ $item->descri }}</td>
+                    <td style="width:2.3cm; border:none;">{{ number_format($item->monto, 2, '.', ',') }}</td>
                 </tr>
+            @endforeach
+        </table>
 
-            @endfor
-            <tr>
-                <td style="width: 10%; text-align: center; border-left: 1px solid #000; border-right: 1px solid #000; border-bottom: 1px solid #000;">&nbsp;</td>
-                <td style="width: 25%; text-align: center; border-right: 1px solid #000; border-bottom: 1px solid #000;">&nbsp;</td>
-                <td style="width: 15%; text-align: right; border-right: 1px solid #000; border-bottom: 1px solid #000;">&nbsp;</td>
+        <!-- PARTE DE LAS DEDUCCIONES -->
+        <table style="position:absolute; top:8.3cm; left:12.72cm; border-collapse:collapse; font-family: Arial, sans-serif; font-size:6pt; text-align:center;">
+            @php $totalDeducciones = 0; @endphp
+            @foreach($grupo['deducciones'] as $item)
+                @php $totalDeducciones += $item->monto; @endphp
+                <tr>
+                    <td style="width:1.5cm; border:none;">{{ $item->clave }}</td>
+                    <td style="width:7.3cm; border:none;">{{ $item->descri }}</td>
+                    <td style="width:1cm; border:none;">{{ $item->pagot != 0 ? $item->pago4.'/'.$item->pagot : '' }}</td>
+                    <td style="width:2.3cm; border:none;">{{ number_format($item->monto, 2, '.', ',') }}</td>
+                </tr>
+            @endforeach
+        </table>
 
-                <td style="width: 10%; text-align: center; border-right: 1px solid #000; border-bottom: 1px solid #000;">&nbsp;</td>
-                <td style="width: 25%; text-align: center; border-right: 1px solid #000; border-bottom: 1px solid #000;">&nbsp;</td>
-                <td style="width: 15%; text-align: right; border-right: 1px solid #000; border-bottom: 1px solid #000;">&nbsp;</td>
-            </tr>
+        @php
+            $neto = $totalPercepciones - $totalDeducciones;
+        @endphp
+
+        <!-- PARTE DE LOS TOTALES PERCEPCIONES -->
+        <table style="position:absolute; top:17.3cm; left:10.5cm; border-collapse:collapse; font-family: Arial, sans-serif; font-size:9.5pt; text-align:center;">
             <tr>
-                <td colspan="2" style="text-align: right;">
-                    <strong>TOTAL:</strong>
-                </td>
-                <td style="text-align: right; border-left: 1px solid #000; border-right: 1px solid #000; border-bottom: 1px solid #000;">
-                    ${{ number_format($deducciones, 2) }}
-                </td>
-                <td>&nbsp;</td>
-                <td style="text-align: right;">
-                    <strong>TOTAL:</strong>
-                </td>
-                <td style="text-align: right; border-left: 1px solid #000; border-right: 1px solid #000; border-bottom: 1px solid #000;">
-                    ${{ number_format($percepciones, 2) }}
-                </td>
+                <td style="width:2cm; border:none;">${{ number_format($totalPercepciones, 2, '.', ',') }}</td>
             </tr>
+        </table>
+
+        <!-- PARTE DE LOS TOTALES DEDUCCIONES -->
+        <table style="position:absolute; top:17.3cm; left:22.8cm; border-collapse:collapse; font-family: Arial, sans-serif; font-size:9.5pt; text-align:center;">
             <tr>
-                <td colspan="2">
-                    &nbsp;
-                </td>
-                <td>
-                    &nbsp;
-                </td>
-                <td>&nbsp;</td>
-                <td style="text-align: right;">
-                    &nbsp;
-                </td>
-                <td style="text-align: right; border-left: 1px solid #000; border-right: 1px solid #000; border-bottom: 1px solid #000;">
-                    ${{ number_format($deducciones-$percepciones, 2) }}
-                </td>
+                <td style="width:2cm; border:none;">${{ number_format($totalDeducciones, 2, '.', ',') }}</td>
             </tr>
+        </table>
+
+        <!-- PARTE DEL NETO -->
+        <table style="position:absolute; top:18.3cm; left:22.8cm; border-collapse:collapse; font-family: Arial, sans-serif; font-size:9.5pt; text-align:center;">
             <tr>
-                <td colspan="4">
-                    <div style="font-size: 0.7em;">Éste es un documento oficial y cualquier alteración de sus partes constituirá un delito conforme lo establecido en el Capitulo II del Código Penal del Estado de Oaxaca.</div>
-                </td>
+                <td style="width:2cm; border:none;">${{ number_format($neto, 2, '.', ',') }}</td>
             </tr>
-        </tbody>
-    </table>
-    @if (!$loop->last)
-        <div style="break-after: always; page-break-after: always;"></div>
-    @endif
+        </table>
+
+        @if(!$loop->last)
+            <div style="page-break-after: always;"></div>
+        @endif
     @endforeach
+
+
+
+
 </body>
 </html>

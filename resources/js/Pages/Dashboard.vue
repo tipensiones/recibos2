@@ -34,8 +34,8 @@ const submit = () => {
     loading.value = true;
     axios.get(route('sobres.index'), {
         params: {
-            year: year.value,
-            month: month.value
+            year: form.year,
+            month: form.month
         }
     }).then(response => {
         loading.value = false;
@@ -53,49 +53,49 @@ const submit = () => {
     <Head title="Dashboard" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
-        </template>
+       
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
-                        <form @submit.prevent="submit">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <div>Año</div>
-                                        <select name="year" id="year" v-model="form.year">
-                                            <option v-for="(item, index) in years" :value="item">{{ item }}</option>
-                                        </select>
-                                    </td>
-                                    <td>&nbsp;</td>
-                                    <td>
-                                        <div>Mes</div>
-                                        <select name="month" id="month" v-model="form.month">
-                                            <option v-for="(item, index) in months" :value="item">{{ item }}</option>
-                                        </select>
-                                    </td>
-                                    <td>&nbsp;</td>
-                                    <td>
-                                        <div>&nbsp;</div>
-                                        <PrimaryButton :disabled="loading" class="ml-4" :class="{ 'opacity-25': form.processing }">
-                                            Buscar
-                                        </PrimaryButton>
-                                    </td>
-                                </tr>
-                            </table>
+                        <form @submit.prevent="submit" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                            <!-- Año -->
+                            <div>
+                                <label for="year" class="block text-sm font-medium text-gray-700">Año</label>
+                                <select id="year" v-model="form.year"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option v-for="(item, index) in years" :key="index" :value="item">{{ item }}</option>
+                                </select>
+                            </div>
+
+                            <!-- Mes -->
+                            <div>
+                                <label for="month" class="block text-sm font-medium text-gray-700">Mes</label>
+                                <select id="month" v-model="form.month"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option v-for="(item, index) in months" :key="index" :value="item">{{ item }}</option>
+                                </select>
+                            </div>
+
+                            <!-- Botón -->
+                            <div class="flex">
+                                <PrimaryButton :disabled="loading" class="w-full justify-center"
+                                    :class="{ 'opacity-25': form.processing }">
+                                    Buscar
+                                </PrimaryButton>
+                            </div>
                         </form>
                     </div>
+
                     <div class="p-6 text-gray-900" v-if="rows.length > 0">
-                        <h1>
-                            <a :href="route('sobres.show', { sobre: ids })" target="_blank">
+                        <h1 class="text-lg font-semibold">
+                            <a :href="route('sobres.show', { sobre: ids })" target="_blank"
+                                class="text-red-600 hover:text-red-800 flex items-center gap-2">
                                 <i class="fa-solid fa-file-pdf"></i> DESCARGAR RECIBO
                             </a>
                         </h1>
                     </div>
-
                 </div>
             </div>
         </div>

@@ -38,6 +38,7 @@ class SobresController extends Controller
         $records = RespaldoNomina::where('jpp', Arr::get($persona, 'jpp'))
                         ->where('numjpp', Arr::get($persona, 'num'))
                         ->where('archivo', $file)
+                        //->whereIn('tipo_nomina',['N','NR','DJ','AG','CA'])
                         ->get();
 
         return response()->json($records);
@@ -67,130 +68,107 @@ class SobresController extends Controller
         set_time_limit(0);
         $ids = explode(',', $id);
         $items = RespaldoNomina::whereIn('id', $ids)->groupBy('tipo_nomina')->get();
+        //dd($items);
         $maestro = Arr::get(auth()->user(), 'persona');
-
         $file = Arr::get($items, '0.archivo');
-        $year = implode('', ['20', substr($file, 0, 2)]);
+
+        $year = '20' . substr($file, 0, 2);
         $month = substr($file, 2, 2);
 
-        $date = Carbon::parse(implode('-', [$year, $month, '01']));
+        $date = Carbon::parse("$year-$month-01");
         $mes = array_search($month, static::MESES);
 
-        $fecha = implode('-', [$date->endOfMonth()->day, $month, $year]);
-        $periodo = implode(' ', ['DEL', $date->startOfMonth()->day, 'AL', $date->endOfMonth()->day, 'DE', $mes, 'DEL', $year]);
+        // ultimo dia del mes anterior
+        $fecha = $date->copy()->subMonth()->endOfMonth()->format('d/m/Y');
+        $periodo = strtolower('0'.$date->startOfMonth()->day . ' al ' . $date->endOfMonth()->day . ' de ' . $mes . ' del ' . $year);
 
-$respaldos1 = [];
-$respaldos2 = [];
+        
+        $datosPorTipo = [];
 
-foreach ($items as $item) {
-    $archivo = Arr::get($item, 'archivo');
-    $tipo_nomina = Arr::get($item, 'tipo_nomina');
-    $jpp = Arr::get($item, 'jpp');
-    $numjpp = Arr::get($item, 'numjpp');
-
-    $nomina1 = RespaldoNomina::where('archivo', $archivo)
-                ->where('tipo_nomina', $tipo_nomina)
-                ->where('jpp', $jpp)
-                ->where('numjpp', $numjpp)
-                ->where('clave', '>', 60)
-                ->orderBy('clave', 'asc')
-                ->get();
-
-    $nomina2 = RespaldoNomina::where('archivo', $archivo)
-                ->where('tipo_nomina', $tipo_nomina)
-                ->where('jpp', $jpp)
-                ->where('numjpp', $numjpp)
-                ->where('clave', '<', 60)
-                ->orderBy('clave', 'asc')
-                ->get();
-
-    // Determinar la longitud máxima
-    $max = max($nomina1->count(), $nomina2->count());
-
-    // Crear objeto plantilla con la misma estructura que un RespaldoNomina
-    $plantilla = (new RespaldoNomina())->forceFill([
-    'rfc' => '',
-    'jpp' => $jpp,
-    'numjpp' => $numjpp,
-    'clave' => '',
-    'secuen' => 0,
-    'descri' => '',
-    'pago4' => 0,
-    'pagot' => '',
-    'leyen' => null,
-    'fechaini' => null,
-    'fechafin' => null,
-    'nomelec' => null,
-    'supervive' => null,
-    'archivo' => $archivo,
-    'tipo_nomina' => $tipo_nomina,
-    'monto' => '0.00',
-    'tipo_pago' => '',
-    'folio' => 0
-]);
-
-    // Rellenar nomina1 con copias de la plantilla
-    while ($nomina1->count() < $max) {
-        $nomina1->push(clone $plantilla);
-    }
-
-    // Rellenar nomina2 con copias de la plantilla
-    while ($nomina2->count() < $max) {
-        $nomina2->push(clone $plantilla);
-    }
-
-array_push($respaldos1 , $nomina1);
-array_push($respaldos2 , $nomina2);
-}   
-
-
-
-//dd($respaldos1,$respaldos2);
-/*
-        $respaldos = [];
         foreach ($items as $item) {
-            $archivo = Arr::get($item, 'archivo');
-            $tipo_nomina = Arr::get($item, 'tipo_nomina');
-            $jpp = Arr::get($item, 'jpp');
-            $numjpp = Arr::get($item, 'numjpp');
-            $nomina = RespaldoNomina::where('archivo', $archivo)
-                        ->where('tipo_nomina', $tipo_nomina)
-                        ->where('jpp', $jpp)
-                        ->where('numjpp', $numjpp)
-                        ->where('clave','>',60)
-                        ->get();
-            array_push($respaldos, $nomina);
+            $tipo = Arr::get($item, 'tipo_nomina');
+
+            if($tipo == 'DM'){
+
+                // Deducciones
+                $deducciones = RespaldoNomina::where('archivo', $item['archivo'])
+                                ->where('tipo_nomina', $tipo)
+                                ->where('jpp', $item['jpp'])
+                                ->where('numjpp', $item['numjpp'])
+                                ->where('clave','>',106)
+                                ->orderBy('clave')
+                                ->orderBy('secuen')
+                                ->get();
+
+                // Percepciones
+                $percepciones = RespaldoNomina::where('archivo', $item['archivo'])
+                                ->where('tipo_nomina', $tipo)
+                                ->where('jpp', $item['jpp'])
+                                ->where('numjpp', $item['numjpp'])
+                                ->where('clave','<',107)
+                                ->orderBy('clave')
+                                ->orderBy('secuen')
+                                ->get();
+
+            }if($tipo == 'UT'){
+
+                // Deducciones
+                $deducciones = RespaldoNomina::where('archivo', $item['archivo'])
+                                ->where('tipo_nomina', $tipo)
+                                ->where('jpp', $item['jpp'])
+                                ->where('numjpp', $item['numjpp'])
+                                ->where('clave','>',107)
+                                ->orderBy('clave')
+                                ->orderBy('secuen')
+                                ->get();
+
+                // Percepciones
+                $percepciones = RespaldoNomina::where('archivo', $item['archivo'])
+                                ->where('tipo_nomina', $tipo)
+                                ->where('jpp', $item['jpp'])
+                                ->where('numjpp', $item['numjpp'])
+                                ->where('clave','<',108)
+                                ->orderBy('clave')
+                                ->orderBy('secuen')
+                                ->get();
+
+            }else{
+
+                // Deducciones
+                $deducciones = RespaldoNomina::where('archivo', $item['archivo'])
+                                ->where('tipo_nomina', $tipo)
+                                ->where('jpp', $item['jpp'])
+                                ->where('numjpp', $item['numjpp'])
+                                ->where('clave','>',60)
+                                ->orderBy('clave')
+                                ->orderBy('secuen')
+                                ->get();
+
+                // Percepciones
+                $percepciones = RespaldoNomina::where('archivo', $item['archivo'])
+                                ->where('tipo_nomina', $tipo)
+                                ->where('jpp', $item['jpp'])
+                                ->where('numjpp', $item['numjpp'])
+                                ->where('clave','<',60)
+                                ->orderBy('clave')
+                                ->orderBy('secuen')
+                                ->get();
+            }
+            
+
+            $datosPorTipo[$tipo] = [
+                'deducciones' => $deducciones,
+                'percepciones' => $percepciones,
+                'maestro' => $maestro,
+                'fecha' => $fecha,
+                'periodo' => $periodo,
+            ];
         }
 
-        
-        $respaldos2 = [];
-        foreach ($items as $item) {
-            $archivo2 = Arr::get($item, 'archivo');
-            $tipo_nomina2 = Arr::get($item, 'tipo_nomina');
-            $jpp2 = Arr::get($item, 'jpp');
-            $numjpp2 = Arr::get($item, 'numjpp');
-            $nomina2 = RespaldoNomina::where('archivo', $archivo2)
-                        ->where('tipo_nomina', $tipo_nomina2)
-                        ->where('jpp', $jpp2)
-                        ->where('numjpp', $numjpp2)
-                        ->where('clave','<',60)
-                        ->get();
-            array_push($respaldos, $nomina2);
-        }*/
-        /*
-        return view('recibo', [
-            'respaldo' => $respaldo,
-            'maestro' => $maestro
-        ]);
-        */
-        
         $pdf = Pdf::loadView('recibo', [
-            'respaldos1' => $respaldos1,
-            'respaldos2' => $respaldos2,
-            'maestro' => $maestro,
-            'fecha' => $fecha,
-            'periodo' => $periodo
+            'datosPorTipo' => $datosPorTipo
         ])->setPaper('letter', 'landscape');
+
         $uuid = Uuid::uuid4();
         return $pdf->stream("$uuid.pdf");
     }
