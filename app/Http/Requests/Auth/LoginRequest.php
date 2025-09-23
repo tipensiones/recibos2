@@ -25,13 +25,20 @@ class LoginRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
     public function rules(): array
-    {
+    {   
         return [
             'username' => ['required', 'string'],
             'password' => ['required', 'string'],
+            'g-recaptcha-response' => 'required|captcha',
         ];
     }
-
+    public function messages()
+    {
+        return [
+            'g-recaptcha-response.required' => 'Por favor, confirma que no eres un robot.',
+            'g-recaptcha-response.captcha' => 'Error de validación de reCAPTCHA. Intenta nuevamente.',
+        ];
+    }
     /**
      * Attempt to authenticate the request's credentials.
      *

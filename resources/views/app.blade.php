@@ -13,6 +13,7 @@
         <link href="{{ asset('fontawesome-free/css/brands.css') }}" rel="stylesheet" />
         <link href="{{ asset('fontawesome-free/css/solid.css') }}" rel="stylesheet" />
 
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         <!-- Scripts -->
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
