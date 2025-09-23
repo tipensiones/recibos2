@@ -14,7 +14,7 @@ const showingNavigationDropdown = ref(false);
     <div>
         <div class="min-h-screen bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
-                <!-- Primary Navigation Menu -->
+                <!-- Menú de Navegación Principal -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
                         <div class="flex">
@@ -27,16 +27,16 @@ const showingNavigationDropdown = ref(false);
                                 </Link>
                             </div>
 
-                            <!-- Navigation Links -->
+                            <!-- Enlaces de Navegación -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                                    Inicio
                                 </NavLink>
                             </div>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
-                            <!-- Settings Dropdown -->
+                            <!-- Menú de Usuario -->
                             <div class="ml-3 relative">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
@@ -64,16 +64,16 @@ const showingNavigationDropdown = ref(false);
                                     </template>
 
                                     <template #content>
-                                        <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
+                                        <DropdownLink :href="route('profile.edit')"> Perfil </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
-                                            Log Out
+                                            Cerrar sesión
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>
                             </div>
                         </div>
 
-                        <!-- Hamburger -->
+                        <!-- Botón Móvil -->
                         <div class="-mr-2 flex items-center sm:hidden">
                             <button
                                 @click="showingNavigationDropdown = !showingNavigationDropdown"
@@ -106,18 +106,18 @@ const showingNavigationDropdown = ref(false);
                     </div>
                 </div>
 
-                <!-- Responsive Navigation Menu -->
+                <!-- Menú Responsive -->
                 <div
                     :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
                     class="sm:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
+                            Inicio
                         </ResponsiveNavLink>
                     </div>
 
-                    <!-- Responsive Settings Options -->
+                    <!-- Opciones de Usuario en Móvil -->
                     <div class="pt-4 pb-1 border-t border-gray-200">
                         <div class="px-4">
                             <div class="font-medium text-base text-gray-800">
@@ -127,23 +127,23 @@ const showingNavigationDropdown = ref(false);
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')"> Profile </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('profile.edit')"> Perfil </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('logout')" method="post" as="button">
-                                Log Out
+                                Cerrar sesión
                             </ResponsiveNavLink>
                         </div>
                     </div>
                 </div>
             </nav>
 
-            <!-- Page Heading -->
+            <!-- Encabezado de Página -->
             <header class="bg-white shadow" v-if="$slots.header">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
             </header>
 
-            <!-- Page Content -->
+            <!-- Contenido de la Página -->
             <main>
                 <slot />
             </main>
