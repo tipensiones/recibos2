@@ -30,14 +30,13 @@ class SobresController extends Controller
      */
     public function index(Request $request)
     {
-        //dd($request->all());
         $year = substr(Arr::get($request, 'year'), 2, 2);
         $month = static::MESES[Arr::get($request, 'month')];
         $file = implode('', [$year, $month]);
         $persona = Arr::get(auth()->user(), 'persona');
 
-        $records = RespaldoNomina::where('jpp', 'JUB')
-                        ->where('numjpp', '12')
+        $records = RespaldoNomina::where('jpp', Arr::get($persona, 'jpp'))
+                        ->where('numjpp', Arr::get($persona, 'num'))
                         ->where('archivo', $file)
                         //->whereIn('tipo_nomina',['N','NR','DJ','AG','CA'])
                         ->get();
