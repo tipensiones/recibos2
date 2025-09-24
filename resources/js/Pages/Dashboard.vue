@@ -34,8 +34,8 @@ const submit = () => {
     loading.value = true;
     axios.get(route('sobres.index'), {
         params: {
-            year: form.year,
-            month: form.month
+            year: year.value,
+            month: month.value
         }
     }).then(response => {
         loading.value = false;
