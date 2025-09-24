@@ -35,13 +35,14 @@ const submit = () => {
     axios.get(route('sobres.index'), {
         params: {
             year: year.value,
-            month: month.value
+            month: month.value//cambio
         }
     }).then(response => {
         loading.value = false;
         rows.value = response.data
         ids.value = response.data.map(a => a['id']);
         console.log(ids);
+        console.log(response.data) 
     }).catch(error => {
         loading.value = false;
         console.log(error);
